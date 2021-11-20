@@ -17,3 +17,9 @@ docker run --rm -it -v $HOME/9cc:/9cc compilerbook
 ```
 docker run --rm -it -v $HOME/9cc:/9cc compilerbook
 ```
+
+コンパイル
+
+```
+docker run --rm -it -v $(pwd):/9cc -w /9cc compilerbook cc -o 9cc 9cc.c
+```
