@@ -18,6 +18,7 @@ typedef enum {
 } TokenKind;
 
 typedef struct Token Token;
+typedef struct LVar LVar;
 
 struct Token {
   TokenKind kind; // トークンの型
@@ -25,6 +26,13 @@ struct Token {
   int val;        // kindがTK_NUMの場合、その数値
   char *str;      // トークン文字列
   int len;        // トークンの長さ
+};
+
+struct LVar {
+  LVar *next;  // 次の変数またはNULL
+  char *name;  // 変数の名前
+  int len;     // 名前の長さ
+  int offset;  // RBPからのオフセット
 };
 
 void error(char *fmt, ...);
@@ -40,6 +48,8 @@ Token *tokenize();
 char *user_input;
 // 現在着目しているトークン;
 Token *token;
+// ローカル変数
+LVar *locals;
 
 
 typedef enum {

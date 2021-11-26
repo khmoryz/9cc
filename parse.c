@@ -46,6 +46,13 @@ Token *consume_ident() {
   return tok;
 }
 
+LVar *find_lvar(Token *tok) {
+  for (LVar *var = locals; var; var = var->next)
+    if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
+      return var;
+  return NULL;
+}
+
 // 次のトークンが期待している記号のときには、トークンを1つ読み進める。
 // それ以外の場合にはエラーを報告する。
 void expect(char *op) {
@@ -79,6 +86,10 @@ Token *new_token(TokenKind kind, Token *cur, char *str, int len) {
   return tok;
 }
 
+bool is_alphabet(char c) {
+  return ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z');
+}
+
 bool startswith(char *p, char *q) {
   return memcmp(p, q, strlen(q)) == 0;
 }
@@ -106,10 +117,11 @@ Token *tokenize() {
     continue;
     }
 
-    if ('a' <= *p && *p <= 'z') {
-      cur = new_token(TK_IDENT, cur, p, 1);
-      p++;
-      cur->len = 1;
+    if (is_alphabet(*p)) {
+      char *q = p++;
+      while (is_alphabet(*p))
+        p++;
+      cur = new_token(TK_IDENT, cur, q, p-q);
       continue;
     }
 
@@ -268,7 +280,20 @@ Node *primary() {
   if (tok) {
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_LVAR;
-    node->offset = (tok->str[0] - 'a' + 1) * 8;
+
+    LVar *lvar = find_lvar(tok);
+    if (lvar) {
+      node->offset = lvar->offset;
+    } else {
+      int offset = locals ? locals->offset : 0;
+      lvar = calloc(1, sizeof(Node));
+      lvar->next = locals;
+      lvar->name = tok->str;
+      lvar->len = tok->len;
+      lvar->offset = offset + 8;
+      node->offset = lvar->offset;
+      locals = lvar;
+    }
     return node;
   }
   return new_num(expect_number());
