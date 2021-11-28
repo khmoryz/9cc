@@ -53,6 +53,7 @@ LVar *locals;
 
 
 typedef enum {
+  ND_RETURN, // return
   ND_ADD,    // *
   ND_SUB,    // -
   ND_MUL,    // *

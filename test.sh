@@ -50,4 +50,6 @@ assert 3 'a=1;b=2;a+b;'
 assert 5 'a=b=5;'
 assert 5 'foo=5;'
 assert 3 'foo=1;bar=2;foo+bar;'
+assert 5 'return 5;'
+assert 6 'foo=2;bar=3;return foo*bar;'
 echo OK

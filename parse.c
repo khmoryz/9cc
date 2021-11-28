@@ -90,6 +90,23 @@ bool is_alphabet(char c) {
   return ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z');
 }
 
+static char *starts_with_reserved(char *p) {
+  static char *kws[] = {"return"};
+
+  for (int i = 0; i < sizeof(kws) / sizeof(*kws); i++) {
+    int len = strlen(kws[i]);
+    if (strncmp(kws[i], p, len) == 0 && !is_alphabet(p[len]))
+      return kws[i];
+  }
+
+  static char *ops[] = {"<=", ">=", "==", "!="};
+
+  for (int i = 0; i < sizeof(ops) / sizeof(*ops); i++)
+    if (strncmp(ops[i], p, strlen(ops[i])) == 0)
+        return ops[i];
+  return NULL;
+}
+
 bool startswith(char *p, char *q) {
   return memcmp(p, q, strlen(q)) == 0;
 }
@@ -107,14 +124,13 @@ Token *tokenize() {
       p++;
       continue;
     }
-  // printf("%s\n",p);
 
-    // 複数文字
-    if (startswith(p, "==") || startswith(p, "!=") ||
-        startswith(p, "<=") || startswith(p, ">=")) {
-    cur = new_token(TK_RESERVED, cur, p, 2);
-    p += 2;
-    continue;
+    char *op = starts_with_reserved(p);
+    if (op) {
+      int len = strlen(op);
+      cur = new_token(TK_RESERVED, cur, p, len);
+      p += len;
+      continue;
     }
 
     if (is_alphabet(*p)) {
@@ -178,8 +194,18 @@ void program() {
 }
 
 // stmt = expr ";"
+//      | "return" expr ";"
 Node *stmt() {
-  Node *node = expr();
+  Node *node;
+
+  if (consume("return")) {
+    node = calloc(1, sizeof(Node));
+    node->kind = ND_RETURN;
+    node->lhs = expr();
+  } else {
+    node = expr();
+  }
+
   expect(";");
   return node;
 }
