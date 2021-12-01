@@ -94,3 +94,8 @@ Node *primary();
 
 void gen_lval(Node *node);
 void gen(Node *node);
+
+//
+// debug.c
+//
+void token_walk();
