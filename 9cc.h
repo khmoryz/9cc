@@ -5,11 +5,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+bool debug;
+
 //
 // parse.c
 //
 
 // トークンの種類
+// 更新する場合はdebug.cにも反映する
 typedef enum {
   TK_RESERVED, // 記号
   TK_IDENT,    // 識別子
@@ -52,6 +55,7 @@ Token *token;
 LVar *locals;
 
 
+// 更新する場合はdebug.cにも反映する
 typedef enum {
   ND_RETURN, // return
   ND_ADD,    // *
@@ -99,3 +103,4 @@ void gen(Node *node);
 // debug.c
 //
 void token_walk();
+void node_dump();

@@ -3,12 +3,14 @@
 int main(int argc, char **argv) {
   if (argc >= 4)
     error("%s: invalid number of arguments", argv[0]);
+  if (argc == 3 && strcmp(argv[2], "-d") == 0)
+    debug = true;
 
   user_input = argv[1];
   token = tokenize();
 
   // トークン列のデバッグ出力
-  if (argc == 3 && strcmp(argv[2], "-d") == 0)
+  if (debug)
     token_walk();
 
   program();

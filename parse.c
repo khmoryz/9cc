@@ -167,6 +167,8 @@ Token *tokenize() {
 
 
 Node *new_node(NodeKind kind) {
+  if (debug)
+    node_dump(kind);
   Node *node = calloc(1, sizeof(Node));
   node->kind = kind;
   return node;

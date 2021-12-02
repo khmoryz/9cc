@@ -1,15 +1,29 @@
 #include "9cc.h"
 
+char tokenKindChar[4][15] = {
+  "TK_RESERVED",
+  "TK_IDENT",
+  "TK_NUM",
+  "TK_EOF",
+};
+
+char nodeKindChar[12][15] = {
+  "ND_RETURN",
+  "ND_ADD",
+  "ND_SUB",
+  "ND_MUL",
+  "ND_DIV",
+  "ND_EQ",
+  "ND_NE",
+  "ND_LT",
+  "ND_LE",
+  "ND_ASSIGN",
+  "ND_LVAR",
+  "ND_NUM",
+};
+
 void token_walk() {
   printf("======= Token Walk Start =======\n\n");
-
-  // enumの整数値を文字列で表示する
-  char tokenKindChar[4][15] = {
-    "TK_RESERVED",
-    "TK_IDENT",
-    "TK_NUM",
-    "TK_EOF",
-  };
 
   Token *tokenCopy;
   tokenCopy = token;
@@ -24,4 +38,8 @@ void token_walk() {
   }
 
   printf("======= Token Walk End =======\n");
+}
+
+void node_dump(int nodeKind) {
+  printf("NodeKind: %s\n", nodeKindChar[nodeKind]);
 }
